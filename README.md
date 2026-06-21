@@ -55,6 +55,24 @@ cd backend && pip install -r requirements.txt && uvicorn app.main:app --reload
 # Blockchain Tests
 cd blockchain/hardhat && npm install && npx hardhat test
 
+from ai_marketplace.agent import Agent
+from ai_marketplace.simulation import SocialSimulator
+
+agents = [
+    Agent("Coordinator", "Leads collaborations", ["leadership"]),
+    Agent("Analyst", "Market predictions", ["analysis"]),
+    Agent("Negotiator", "Deal making", ["persuasion"])
+]
+
+sim = SocialSimulator()
+results = sim.simulate_full_ecosystem(agents, rounds=20)
+
+print("Emergent Coalitions:", results["coalitions"])
+print("Reputation Leaders:", sorted(results["reputation"].items(), key=lambda x: x[1], reverse=True))
+
+
+
+
 
 Live Testing
 Connect MetaMask to Base Sepolia
