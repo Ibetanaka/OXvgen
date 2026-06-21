@@ -12,3 +12,66 @@ cd backend && pip install -r requirements.txt && uvicorn app.main:app --reload
 
 # Blockchain Tests
 cd blockchain/hardhat && npm install && npx hardhat test
+
+
+# In SocialSimulator class
+
+def simulate_full_ecosystem(self, agents: List[Agent], rounds: int = 30) -> Dict:
+    """Comprehensive multi-agent simulation combining all mechanics"""
+    results = {
+        "rounds": rounds,
+        "final_graph": None,
+        "coalitions": [],
+        "reputation": {},
+        "economic_state": {},
+        "emergent_behaviors": []
+    }
+    
+    for round_num in range(rounds):
+        # Interaction phase
+        for a1 in agents:
+            for a2 in agents:
+                if a1 != a2 and random.random() > 0.6:
+                    outcome = a1.interact(a2, random.choice(["collaboration", "negotiation", "competition"]))
+                    # Update trust memory
+                    a1.update_relationship(a2.name, outcome.get("trust_delta", 0))
+        
+        # Economic phase
+        self._simulate_market_dynamics(agents)
+        
+        # Reputation & Influence propagation
+        self._propagate_influence()
+    
+    # Final analysis
+    results["coalitions"] = list(nx.connected_components(self.graph))
+    results["final_graph"] = nx.node_link_data(self.graph)
+    results["emergent_behaviors"] = self._detect_emergent_patterns()
+    
+    return results
+
+def _propagate_influence(self):
+    """Trust and reputation diffusion through network"""
+    for node in self.graph.nodes:
+        neighbors = list(self.graph.neighbors(node))
+        if neighbors:
+            avg_influence = sum(self.graph[node][n]['weight'] for n in neighbors) / len(neighbors)
+            # Influence spreads to connected agents
+            pass  # Update agent internal states
+
+
+#Test
+
+from ai_marketplace.agent import Agent
+from ai_marketplace.simulation import SocialSimulator
+
+agents = [
+    Agent("Coordinator", "Leads collaborations", ["leadership"]),
+    Agent("Analyst", "Market predictions", ["analysis"]),
+    Agent("Negotiator", "Deal making", ["persuasion"])
+]
+
+sim = SocialSimulator()
+results = sim.simulate_full_ecosystem(agents, rounds=20)
+
+print("Emergent Coalitions:", results["coalitions"])
+print("Reputation Leaders:", sorted(results["reputation"].items(), key=lambda x: x[1], reverse=True))
